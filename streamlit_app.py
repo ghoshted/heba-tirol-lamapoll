@@ -5,9 +5,10 @@ import pandas as pd
 import datetime
 import altair as alt
 
-
+st.logo("https://github.com/ghoshted/biocore_cti_artefacts/blob/main/UNI_Logo_Inter_LCSB_rgb2.png?raw=true", size="large")
 today = datetime.date.today()
-st.markdown("**HeBA/Tirol/OSQ/Report**")
+st.sidebar.markdown("**HeBA/Tirol/OSQ/Report**")
+st.markdown("### HeBA/Tirol/OSQ/Report")
 st.badge(str(today))
 
 lama_api_key= st.secrets["lamapoll_api_key"]
