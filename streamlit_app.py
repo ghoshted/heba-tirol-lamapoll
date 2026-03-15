@@ -89,9 +89,65 @@ def get_question_results(lama_api_key,poll_id,question_id):
         st.write(f"Error decoding JSON response. Response content: {response.text}")
     return data
 
-if st.button("Refresh Data", type="primary"):
-    data = get_lama_response_data(lama_api_key)
-    data_mailing = get_lama_response_data_mailing(lama_api_key)
+def to_dataframe_safe(value):
+    """Convert API response data to a pandas DataFrame safely.
+
+    LamaPoll can return nested dicts, dicts with a single list value, or lists.
+    This helper tries common conversions and falls back to json_normalize.
+    """
+
+    try:
+        return pd.DataFrame(value)
+    except Exception:
+        # If response is a dict with one list value, use that list
+        if isinstance(value, dict) and len(value) == 1:
+            first_val = next(iter(value.values()))
+            if isinstance(first_val, list):
+                return pd.DataFrame(first_val)
+        return pd.json_normalize(value)
+
+# 1965090, 29603193
+
+def lamapoll_question_results_barchart(lama_api_key, poll_id, question_id, category_name):
+    result_sex = get_question_results(lama_api_key, poll_id, question_id)
+    result_sex_df = to_dataframe_safe(result_sex)
+
+    # Extract labels and frequencies
+    labels = result_sex_df['groups'][0][0]['labels']
+    items = result_sex_df['groups'][0][0]['items']
+
+    # Combine labels with their frequency data
+    sex_data = []
+    for i, label in enumerate(labels):
+        # Check if the item exists before accessing it
+        # st.write(f"Processing {i} label: {label}")
+        abs_value = items[0]['freq']['abs'][i]
+        sex_data.append({'Category': label, 'Count': abs_value})
+
+    # Create DataFrame for visualization
+    df_sex = pd.DataFrame(sex_data)
+
+    # Create bar chart
+    sex_chart = alt.Chart(df_sex).mark_bar().encode(
+        x=alt.X('Category:N', title=str(category_name)),
+        y=alt.Y('Count:Q', title='Number of Responses'),
+        color='Category:N'
+    ).properties(
+        width=600,
+        height=400,
+        title=f"Survey Responses by {category_name}"
+    )
+
+    st.altair_chart(sex_chart, use_container_width=True)
+
+    # Also display the data in a table
+    #st.dataframe(df_sex, use_container_width=True)
+
+
+#if st.button("Refresh Data", type="primary"):
+#    data = get_lama_response_data(lama_api_key, poll_id)
+#    data_mailing = get_lama_response_data_mailing(lama_api_key, poll_id)
+#    result_sex = get_question_results(lama_api_key, poll_id, question_id)
 
 
 df_mailing = pd.DataFrame(data_mailing)
@@ -207,58 +263,5 @@ with col3:
 #
 # st_echarts(options=options, height="400px")
 
-def to_dataframe_safe(value):
-    """Convert API response data to a pandas DataFrame safely.
 
-    LamaPoll can return nested dicts, dicts with a single list value, or lists.
-    This helper tries common conversions and falls back to json_normalize.
-    """
-
-    try:
-        return pd.DataFrame(value)
-    except Exception:
-        # If response is a dict with one list value, use that list
-        if isinstance(value, dict) and len(value) == 1:
-            first_val = next(iter(value.values()))
-            if isinstance(first_val, list):
-                return pd.DataFrame(first_val)
-        return pd.json_normalize(value)
-
-# 1965090, 29603193
-
-def lamapoll_question_results_barchart(lama_api_key, poll_id, question_id, category_name):
-    result_sex = get_question_results(lama_api_key, poll_id, question_id)
-    result_sex_df = to_dataframe_safe(result_sex)
-
-    # Extract labels and frequencies
-    labels = result_sex_df['groups'][0][0]['labels']
-    items = result_sex_df['groups'][0][0]['items']
-
-    # Combine labels with their frequency data
-    sex_data = []
-    for i, label in enumerate(labels):
-        # Check if the item exists before accessing it
-        # st.write(f"Processing {i} label: {label}")
-        abs_value = items[0]['freq']['abs'][i]
-        sex_data.append({'Category': label, 'Count': abs_value})
-
-    # Create DataFrame for visualization
-    df_sex = pd.DataFrame(sex_data)
-
-    # Create bar chart
-    sex_chart = alt.Chart(df_sex).mark_bar().encode(
-        x=alt.X('Category:N', title=str(category_name)),
-        y=alt.Y('Count:Q', title='Number of Responses'),
-        color='Category:N'
-    ).properties(
-        width=600,
-        height=400,
-        title=f"Survey Responses by {category_name}"
-    )
-
-    st.altair_chart(sex_chart, use_container_width=True)
-
-    # Also display the data in a table
-    #st.dataframe(df_sex, use_container_width=True)
-
-lamapoll_question_results_barchart(lama_api_key,1965090, 29603193,"Gender")
+lamapoll_question_results_barchart(lama_api_key, poll_id, 29603193,"Gender")
