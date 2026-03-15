@@ -136,14 +136,13 @@ def lamapoll_question_results_barchart(lama_api_key, poll_id, question_id, categ
        # width=600,
        # height=400,
         title=f"Survey Responses by {category_name}"
-    )
-    sex_chart.configure_legend(
+    ).configure_legend(
         strokeColor='gray',
-        fillColor='#EEEEEE',
-        padding=10,
-        cornerRadius=10,
-        orient='top-right'
-        )
+        fillColor="#F2FDFF",
+        padding=5,
+        cornerRadius=5,
+        orient='bottom'
+    )
 
     st.altair_chart(sex_chart, theme="streamlit", use_container_width=True)
 
@@ -270,10 +269,13 @@ with col3:
 #
 # st_echarts(options=options, height="400px")
 
-col4, col5, col6 = st.columns(3)
+col4, col5, col6, col7 = st.tabs(["Gender", "Hyposmia", "RBDSQ", "Memory Loss"])
+
 with col4:
     lamapoll_question_results_barchart(lama_api_key, poll_id, 29603193,"Gender")
 with col5:
     lamapoll_question_results_barchart(lama_api_key, poll_id, 29603199,"Hyposmia")
 with col6:
     lamapoll_question_results_barchart(lama_api_key, poll_id, 29603202,"RBDSQ")
+with col7:
+    lamapoll_question_results_barchart(lama_api_key, poll_id, 29603205,"Memory Loss")
