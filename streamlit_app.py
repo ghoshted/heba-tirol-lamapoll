@@ -67,7 +67,6 @@ def get_lama_response_data_mailing(lama_api_key,poll_id):
         st.write(f"Error decoding JSON response for mailings. Response content: {response_mailing.text}")
     return data_mailing
 
-data_mailing = get_lama_response_data_mailing(lama_api_key,poll_id)
 
 def get_question_results(lama_api_key,poll_id,question_id):
     url = f'https://app.lamapoll.de/api/v2/polls/{poll_id}/questions/{question_id}/results'
@@ -147,17 +146,24 @@ def lamapoll_question_results_barchart(lama_api_key, poll_id, question_id, categ
 #    data = get_lama_response_data(lama_api_key, poll_id)
 #    data_mailing = get_lama_response_data_mailing(lama_api_key, poll_id)
 #    result_sex = get_question_results(lama_api_key, poll_id, question_id)
-
-
-df_mailing = pd.DataFrame(data_mailing)
-
+try:
+    data_mailing = get_lama_response_data_mailing(lama_api_key,poll_id)
+except Exception as e:
+    st.write(f"Error occurred while fetching mailing data: {e}")
+    
+try:
+    df_mailing = pd.DataFrame(data_mailing)
+except Exception as e:
+    df_mailing = pd.DataFrame()  # Create an empty DataFrame if conversion fails
+    st.write(f"Error occurred while creating DataFrame for mailing data: {e}")
 
 #df_mailing = df_mailing[df_mailing['attributes'].str.contains('Tirol|TIROL', case=False, na=False)]
 # Convert attributes to string first, then filter
-df_mailing['attributes_str'] = df_mailing['attributes'].astype(str)
-df_mailing = df_mailing[df_mailing['attributes_str'].str.contains('Tirol|TIROL', case=False, na=False)]
-df_mailing = df_mailing.drop('attributes_str', axis=1)  # Remove the temporary column if not needed
-df_mailing_invited = df_mailing['numOfReceivers'].sum()
+if 'attributes' in df_mailing.columns:
+    df_mailing['attributes_str'] = df_mailing['attributes'].astype(str)
+    df_mailing = df_mailing[df_mailing['attributes_str'].str.contains('Tirol|TIROL', case=False, na=False)]
+    df_mailing = df_mailing.drop('attributes_str', axis=1)  # Remove the temporary column if not needed
+    df_mailing_invited = df_mailing['numOfReceivers'].sum()
 
 
 dates = []
@@ -184,12 +190,17 @@ df = df.set_index('Date')
 visitors_total = df['Visitors'].sum()
 started_total = df['Started'].sum()
 finished_total = df['Finished'].sum()
-
-col0, col1, col2, col3 = st.columns(4)
-col0.metric("Total invited", df_mailing_invited)
-col1.metric("Total Visitors", visitors_total, delta=str(round((visitors_total/df_mailing_invited)*100, 2))+"% of invited", delta_arrow="off")
-col2.metric("Total Started", started_total, delta=str(round((started_total/visitors_total)*100, 2))+"% of visitors", delta_arrow="off")
-col3.metric("Total Finished", finished_total, delta=str(round((finished_total/started_total)*100, 2))+"% of started", delta_arrow="off")
+if 'df_mailing_invited' in locals():
+    col0, col1, col2, col3 = st.columns(4)
+    col0.metric("Total invited", df_mailing_invited)
+    col1.metric("Total Visitors", visitors_total, delta=str(round((visitors_total/df_mailing_invited)*100, 2))+"% of invited", delta_arrow="off")
+    col2.metric("Total Started", started_total, delta=str(round((started_total/visitors_total)*100, 2))+"% of visitors", delta_arrow="off")
+    col3.metric("Total Finished", finished_total, delta=str(round((finished_total/started_total)*100, 2))+"% of started", delta_arrow="off")
+else:
+    col0, col1, col2 = st.columns(3)
+    col0.metric("Total Visitors", visitors_total)
+    col1.metric("Total Started", started_total, delta=str(round((started_total/visitors_total)*100, 2))+"% of visitors", delta_arrow="off")
+    col2.metric("Total Finished", finished_total, delta=str(round((finished_total/started_total)*100, 2))+"% of started", delta_arrow="off")
 
 #st.success("DataFrame created successfully with 'Date' as index.")
 #df.head()
