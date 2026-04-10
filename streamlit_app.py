@@ -36,9 +36,9 @@ def get_lama_response_data(lama_api_key,poll_id):
         #print(json.dumps(data, indent=2))
         #st.success('API request successful. Data retrieved and parsed as JSON.')
     except requests.exceptions.RequestException as e:
-        st.write(f"Error making API request: {e}")
+        st.warning(f"Error making API request: {e}")
     except json.JSONDecodeError:
-        st.write(f"Error decoding JSON response. Response content: {response.text}")
+        st.warning(f"Error decoding JSON response. Response content: {response.text}")
     return data
 
 data = get_lama_response_data(lama_api_key,poll_id)
@@ -62,9 +62,9 @@ def get_lama_response_data_mailing(lama_api_key,poll_id):
         #print(json.dumps(data_mailing, indent=2))
         #st.success('API request for mailings successful. Data retrieved and parsed as JSON.')
     except requests.exceptions.RequestException as e:
-        st.write(f"Error making API request for mailings: {e}")
+        st.warning(f"Error making API request for mailings: {e}")
     except json.JSONDecodeError:
-        st.write(f"Error decoding JSON response for mailings. Response content: {response_mailing.text}")
+        st.warning(f"Error decoding JSON response for mailings. Response content: {response_mailing.text}")
     return data_mailing
 
 
@@ -83,9 +83,9 @@ def get_question_results(lama_api_key,poll_id,question_id):
         response.raise_for_status()
         data = response.json()
     except requests.exceptions.RequestException as e:
-        st.write(f"Error making API request: {e}")
+        st.warning(f"Error making API request: {e}")
     except json.JSONDecodeError:
-        st.write(f"Error decoding JSON response. Response content: {response.text}")
+        st.warning(f"Error decoding JSON response. Response content: {response.text}")
     return data
 
 def to_dataframe_safe(value):
@@ -149,13 +149,13 @@ def lamapoll_question_results_barchart(lama_api_key, poll_id, question_id, categ
 try:
     data_mailing = get_lama_response_data_mailing(lama_api_key,poll_id)
 except Exception as e:
-    st.write(f"Error occurred while fetching mailing data: {e}")
-    
+    st.warning(f"Error occurred while fetching mailing data: {e}")
+    data_mailing = []  # Set to empty list if fetching fails
 try:
     df_mailing = pd.DataFrame(data_mailing)
 except Exception as e:
     df_mailing = pd.DataFrame()  # Create an empty DataFrame if conversion fails
-    st.write(f"Error occurred while creating DataFrame for mailing data: {e}")
+    st.warning(f"Error occurred while creating DataFrame for mailing data: {e}")
 
 #df_mailing = df_mailing[df_mailing['attributes'].str.contains('Tirol|TIROL', case=False, na=False)]
 # Convert attributes to string first, then filter
@@ -164,7 +164,6 @@ if 'attributes' in df_mailing.columns:
     df_mailing = df_mailing[df_mailing['attributes_str'].str.contains('Tirol|TIROL', case=False, na=False)]
     df_mailing = df_mailing.drop('attributes_str', axis=1)  # Remove the temporary column if not needed
     df_mailing_invited = df_mailing['numOfReceivers'].sum()
-
 
 dates = []
 started_participants = []
@@ -222,9 +221,9 @@ try:
     data_devices = response.json()
     #print(json.dumps(data, indent=2))
 except requests.exceptions.RequestException as e:
-    print(f"Error making API request: {e}")
+    st.warning(f"Error making API request: {e}")
 except json.JSONDecodeError:
-    print(f"Error decoding JSON response. Response content: {response.text}")
+    st.warning(f"Error decoding JSON response. Response content: {response.text}")
 
 # Extract the userDevices data, which is a list of dictionaries
 devices_data = data_devices[0]['userDevices']
