@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root {
+  /* Surface — the only two "surfaces" in Adept. There is no grey card layer. */
+  --tp-paper: #FEFEFD;
+  --tp-ink: #15140F;
+  --tp-body: #2B2A25;   /* long prose */
+  --tp-soft: #57534A;   /* secondary text */
+  --tp-muted: #6B675E;  /* mono labels */
+
+  /* Structure is drawn with ink transparencies, never with fills or shadows. */
+  --tp-rule: rgba(21, 20, 15, 0.85);       /* section rules */
+  --tp-rule-mid: rgba(21, 20, 15, 0.55);   /* axis lines, emphasis hairline */
+  --tp-hair: rgba(21, 20, 15, 0.14);       /* default hairline */
+  --tp-hair-soft: rgba(21, 20, 15, 0.12);  /* table rows */
+  --tp-tick: rgba(21, 20, 15, 0.35);
+  --tp-wash: rgba(21, 20, 15, 0.045);      /* hover */
+
+  /* One accent per project view. Slate is default. */
+  --tp-accent: #2E4257;
+  --tp-accent-tint: rgba(46, 66, 87, 0.09);
+  --tp-accent-tint-strong: rgba(46, 66, 87, 0.16);
+  --tp-accent-sienna: #8A5A3B;
+  --tp-accent-moss: #3F5B4C;
+  --tp-accent-plum: #6B4E71;
+  --tp-negative: #4E7C6A;  /* negative correlations */
+
+  /* Type */
+  --tp-font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --tp-font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --tp-weight-text: 450;         /* never 400, never bold */
+  --tp-weight-mono: 400;
+  --tp-weight-mono-strong: 500;
+
+  --tp-size-display: 58px;   --tp-size-display-mobile: 40px;
+  --tp-size-stat: 42px;      --tp-size-stat-mobile: 34px;
+  --tp-size-lede: 18.5px;    --tp-size-row-title: 19px;
+  --tp-size-body: 18px;      --tp-size-caption: 16.5px;  --tp-size-nav: 16.5px;
+  --tp-size-mono-lg: 12.5px; --tp-size-mono: 11.5px;
+  --tp-size-mono-sm: 11px;   --tp-size-mono-xs: 10.5px;  --tp-size-mono-xxs: 10px;
+
+  --tp-leading-display: 1;    --tp-leading-lede: 1.55;
+  --tp-leading-body: 1.7;     --tp-leading-caption: 1.65;  --tp-leading-mono: 1.85;
+  --tp-track-display: -0.018em; --tp-track-tight: -0.01em;
+  --tp-track-label: 0.13em;     --tp-track-label-wide: 0.14em;
+  --tp-track-mono: 0.08em;      --tp-track-mono-tight: 0.06em;
+
+  /* Spacing — observed literals, not a strict 4pt grid. Use these values. */
+  --tp-space-1: 2px;   --tp-space-2: 4px;   --tp-space-3: 8px;   --tp-space-4: 10px;
+  --tp-space-5: 12px;  --tp-space-6: 14px;  --tp-space-7: 16px;  --tp-space-8: 18px;
+  --tp-space-9: 20px;  --tp-space-10: 22px; --tp-space-11: 26px; --tp-space-12: 34px;
+  --tp-space-13: 40px; --tp-space-14: 48px; --tp-space-15: 62px; --tp-space-16: 90px;
+
+  /* Layout */
+  --tp-content-width: 990px;   --tp-content-pad: 48px;  --tp-content-pad-mobile: 20px;
+  --tp-sidebar-width: 292px;   --tp-sidebar-rail: 64px; --tp-subpanel-width: 264px;
+  --tp-mobile-breakpoint: 760px;
+  --tp-section-gap: 62px;      --tp-column-gap: 48px;   --tp-row-pad: 14px;
+
+  /* Borders — everything is square. */
+  --tp-radius: 0px;
+  --tp-border: 1px solid var(--tp-hair);
+  --tp-border-strong-line: 1px solid var(--tp-rule);
+  --tp-border-row: 1px solid var(--tp-hair-soft);
+  --tp-active-marker: inset 2px 0 0 var(--tp-accent);
+  --tp-shadow: none;
+  --tp-transition: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}

@@ -1,0 +1,364 @@
+/* Adept — component layer. Resets Streamlit's built-in chrome to the statistical-print
+   language defined in tokens.css, then styles the handful of custom components the
+   app renders as raw HTML (eyebrow, panel head, stat cells, mono legend, alert). */
+
+/* ---------- global reset ---------- */
+
+html, body, .stApp {
+  background: var(--tp-paper) !important;
+  color: var(--tp-body);
+  font-family: var(--tp-font-sans);
+  font-weight: var(--tp-weight-text);
+}
+
+* {
+  box-shadow: none !important;
+  border-radius: var(--tp-radius) !important;
+}
+
+:focus-visible {
+  outline: 1px solid var(--tp-ink) !important;
+  outline-offset: 2px;
+  box-shadow: none !important;
+}
+
+h1, h2, h3, h4, h5, h6, strong, b {
+  font-weight: var(--tp-weight-text) !important;
+}
+
+p, span, label, li, div {
+  font-weight: var(--tp-weight-text);
+}
+
+a {
+  color: var(--tp-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  color: var(--tp-soft);
+}
+
+code, pre, kbd {
+  font-family: var(--tp-font-mono) !important;
+}
+
+/* ---------- layout ---------- */
+
+[data-testid="stMainBlockContainer"], .main .block-container {
+  max-width: var(--tp-content-width);
+  padding-top: var(--tp-space-14);
+  padding-left: var(--tp-content-pad);
+  padding-right: var(--tp-content-pad);
+}
+
+@media (max-width: 760px) {
+  [data-testid="stMainBlockContainer"], .main .block-container {
+    padding-left: var(--tp-content-pad-mobile);
+    padding-right: var(--tp-content-pad-mobile);
+  }
+}
+
+[data-testid="stVerticalBlock"] {
+  gap: var(--tp-space-9);
+}
+
+/* ---------- sidebar ---------- */
+
+section[data-testid="stSidebar"] {
+  background: var(--tp-paper) !important;
+  border-right: var(--tp-border-strong-line);
+}
+
+section[data-testid="stSidebar"] [data-testid="stImage"] img {
+  max-width: 128px !important;
+  width: 128px !important;
+  height: auto !important;
+}
+
+section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"],
+section[data-testid="stSidebar"] [data-testid="stSidebarUserContent"] > div {
+  height: 100%;
+}
+
+section[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+section[data-testid="stSidebar"] [data-testid="stElementContainer"]:last-child {
+  margin-top: auto;
+  padding-top: var(--tp-space-9);
+}
+
+section[data-testid="stSidebar"] p,
+section[data-testid="stSidebar"] span {
+  color: var(--tp-soft);
+}
+
+/* ---------- headings rendered via st.markdown ---------- */
+
+.tp-eyebrow {
+  font-family: var(--tp-font-mono);
+  font-size: var(--tp-size-mono-xs);
+  font-weight: var(--tp-weight-mono);
+  letter-spacing: var(--tp-track-label-wide);
+  text-transform: uppercase;
+  color: var(--tp-accent);
+  margin: 0 0 var(--tp-space-4) 0;
+}
+
+.tp-display {
+  font-family: var(--tp-font-sans);
+  font-weight: var(--tp-weight-text);
+  font-size: var(--tp-size-display);
+  line-height: var(--tp-leading-display);
+  letter-spacing: var(--tp-track-display);
+  color: var(--tp-ink);
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .tp-display { font-size: var(--tp-size-display-mobile); }
+}
+
+.tp-qualifier {
+  font-family: var(--tp-font-mono);
+  font-size: var(--tp-size-mono);
+  font-weight: var(--tp-weight-mono);
+  letter-spacing: var(--tp-track-mono);
+  color: var(--tp-muted);
+  margin: var(--tp-space-5) 0 0 0;
+}
+
+.tp-header-rule {
+  border: none;
+  border-bottom: var(--tp-border-strong-line);
+  margin: var(--tp-space-9) 0 0 0;
+}
+
+/* ---------- panel head ---------- */
+
+.tp-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--tp-space-7);
+  padding-bottom: var(--tp-space-5);
+  border-bottom: var(--tp-border-strong-line);
+  margin-top: var(--tp-space-15);
+  margin-bottom: var(--tp-space-7);
+}
+
+.tp-panel-head--tight {
+  margin-top: var(--tp-space-5);
+}
+
+.tp-section-gap {
+  margin-top: var(--tp-space-13);
+}
+
+[data-testid="stTabPanel"] {
+  padding-top: var(--tp-space-7) !important;
+}
+
+.tp-panel-head__title {
+  font-family: var(--tp-font-mono);
+  font-size: var(--tp-size-mono-lg);
+  font-weight: var(--tp-weight-mono-strong);
+  letter-spacing: var(--tp-track-mono-tight);
+  text-transform: none;
+  color: var(--tp-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tp-panel-head__qualifier {
+  font-family: var(--tp-font-mono);
+  font-size: var(--tp-size-mono);
+  color: var(--tp-muted);
+  white-space: nowrap;
+}
+
+.tp-subpanel-label {
+  font-family: var(--tp-font-mono);
+  font-size: var(--tp-size-mono-xs);
+  letter-spacing: var(--tp-track-label);
+  text-transform: uppercase;
+  color: var(--tp-muted);
+  margin-bottom: var(--tp-space-5);
+}
+
+/* ---------- stat cells ---------- */
+
+.tp-stat-row {
+  display: flex;
+  border-top: var(--tp-border-strong-line);
+  border-bottom: var(--tp-border-strong-line);
+  margin: var(--tp-space-9) 0 0 0;
+}
+
+.tp-stat-cell {
+  flex: 1;
+  padding: 22px 22px 26px 0;
+  border-right: var(--tp-border);
+}
+
+.tp-stat-cell:last-child {
+  border-right: none;
+}
+
+.tp-stat-cell:not(:first-child) {
+  padding-left: 22px;
+}
+
+.tp-stat-cell__label {
+  font-family: var(--tp-font-mono);
+  font-size: var(--tp-size-mono-sm);
+  letter-spacing: var(--tp-track-label);
+  text-transform: uppercase;
+  color: var(--tp-muted);
+  margin-bottom: 14px;
+}
+
+.tp-stat-cell__value {
+  font-family: var(--tp-font-sans);
+  font-size: var(--tp-size-stat);
+  font-weight: var(--tp-weight-text);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tp-ink);
+  margin-bottom: 10px;
+}
+
+.tp-stat-cell__note {
+  font-family: var(--tp-font-mono);
+  font-size: var(--tp-size-mono);
+  color: var(--tp-soft);
+}
+
+@media (max-width: 760px) {
+  .tp-stat-row { flex-direction: column; }
+  .tp-stat-cell {
+    border-right: none;
+    border-bottom: var(--tp-border-row);
+    padding: 18px 0;
+  }
+  .tp-stat-cell:not(:first-child) { padding-left: 0; }
+  .tp-stat-cell:last-child { border-bottom: none; }
+  .tp-stat-cell__value { font-size: var(--tp-size-stat-mobile); }
+}
+
+/* ---------- caption ---------- */
+
+.tp-caption {
+  font-family: var(--tp-font-sans);
+  font-size: var(--tp-size-caption);
+  line-height: var(--tp-leading-caption);
+  color: var(--tp-body);
+  max-width: 640px;
+  margin: var(--tp-space-6) 0 0 0;
+}
+
+/* ---------- mono legend (hand-set, replaces chart legend boxes) ---------- */
+
+.tp-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tp-space-9);
+  margin-top: var(--tp-space-5);
+}
+
+.tp-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tp-space-3);
+  font-family: var(--tp-font-mono);
+  font-size: var(--tp-size-mono);
+  letter-spacing: var(--tp-track-mono);
+  color: var(--tp-soft);
+}
+
+.tp-legend__swatch {
+  width: 9px;
+  height: 9px;
+  display: inline-block;
+}
+
+/* ---------- alert (replaces st.warning / st.error to drop the built-in icon) ---------- */
+
+.tp-alert {
+  border: var(--tp-border-strong-line);
+  padding: var(--tp-space-7);
+  margin: var(--tp-space-7) 0;
+}
+
+.tp-alert__label {
+  font-family: var(--tp-font-mono);
+  font-size: var(--tp-size-mono-xs);
+  letter-spacing: var(--tp-track-label-wide);
+  text-transform: uppercase;
+  color: var(--tp-ink);
+  margin-bottom: var(--tp-space-3);
+}
+
+.tp-alert__body {
+  font-family: var(--tp-font-sans);
+  font-size: var(--tp-size-caption);
+  color: var(--tp-body);
+}
+
+/* ---------- tabs, restyled as a mono underline nav ---------- */
+
+[data-testid="stTabs"] [role="tablist"] {
+  gap: var(--tp-space-11);
+  border-bottom: var(--tp-border);
+  background: transparent;
+}
+
+[data-testid="stTab"] {
+  padding: 0 0 var(--tp-space-4) 0;
+  background: transparent !important;
+}
+
+[data-testid="stTab"] [data-testid="stMarkdownContainer"] p {
+  font-family: var(--tp-font-mono);
+  font-size: var(--tp-size-mono-xs);
+  font-weight: var(--tp-weight-mono);
+  letter-spacing: var(--tp-track-label);
+  text-transform: uppercase;
+  color: var(--tp-muted);
+  margin: 0;
+}
+
+[data-testid="stTab"][aria-selected="true"] [data-testid="stMarkdownContainer"] p {
+  color: var(--tp-ink) !important;
+}
+
+[data-testid="stTab"] .react-aria-SelectionIndicator {
+  background: var(--tp-accent) !important;
+  height: 2px !important;
+}
+
+/* ---------- dataframe ---------- */
+
+[data-testid="stDataFrame"] {
+  border: var(--tp-border) !important;
+  font-family: var(--tp-font-mono) !important;
+}
+
+/* ---------- misc native widgets kept for functional chrome ---------- */
+
+[data-testid="stMetricValue"] {
+  font-variant-numeric: tabular-nums;
+}
+
+button {
+  font-family: var(--tp-font-mono) !important;
+  letter-spacing: var(--tp-track-mono);
+  text-transform: uppercase;
+  font-size: var(--tp-size-mono);
+}

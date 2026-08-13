@@ -1,4 +1,12 @@
+[client]
+toolbarMode = "viewer"
+
 [theme]
-base="light"
-primaryColor ="rgb(30, 52, 70)"
-textColor ="rgb(30, 52, 70)"
+base = "light"
+primaryColor = "#2E4257"
+backgroundColor = "#FEFEFD"
+secondaryBackgroundColor = "#FEFEFD"
+textColor = "#15140F"
+font = "sans serif"
+baseRadius = "none"
+showWidgetBorder = false
