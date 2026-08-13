@@ -44,31 +44,6 @@ def get_lama_response_data(lama_api_key,poll_id):
 data = get_lama_response_data(lama_api_key,poll_id)
 
 
-def get_lama_response_data_mailing(lama_api_key,poll_id):
-    url_mailing = f'https://app.lamapoll.de/api/v2/polls/{poll_id}/mailings'
-
-    headers_mailing = {
-        'accept': 'application/json',
-        'Authorization': 'Bearer '+str(lama_api_key)
-    }
-    params_mailing = {
-        'offset': 6,
-        'status': 'done'
-    }
-    try:
-        response_mailing = requests.get(url_mailing, headers=headers_mailing, params=params_mailing)
-        response_mailing.raise_for_status()  # Raise an HTTPError for bad responses (4xx or 5xx)
-        data_mailing = response_mailing.json()
-        #print(json.dumps(data_mailing, indent=2))
-        #st.success('API request for mailings successful. Data retrieved and parsed as JSON.')
-    except requests.exceptions.RequestException as e:
-        st.warning(f"Error making API request for mailings: {e}")
-        st.toast("Some API requests failed from Lamapoll side.", icon="⚠️", duration="long")
-    except json.JSONDecodeError:
-        st.warning(f"Error decoding JSON response for mailings. Response content: {response_mailing.text}")
-    return data_mailing
-
-
 def get_question_results(lama_api_key,poll_id,question_id):
     url = f'https://app.lamapoll.de/api/v2/polls/{poll_id}/questions/{question_id}/results'
     headers = {
@@ -145,26 +120,7 @@ def lamapoll_question_results_barchart(lama_api_key, poll_id, question_id, categ
 
 #if st.button("Refresh Data", type="primary"):
 #    data = get_lama_response_data(lama_api_key, poll_id)
-#    data_mailing = get_lama_response_data_mailing(lama_api_key, poll_id)
 #    result_sex = get_question_results(lama_api_key, poll_id, question_id)
-try:
-    data_mailing = get_lama_response_data_mailing(lama_api_key,poll_id)
-except Exception as e:
-    st.warning(f"Error occurred while fetching mailing data: {e}")
-    data_mailing = []  # Set to empty list if fetching fails
-try:
-    df_mailing = pd.DataFrame(data_mailing)
-except Exception as e:
-    df_mailing = pd.DataFrame()  # Create an empty DataFrame if conversion fails
-    st.warning(f"Error occurred while creating DataFrame for mailing data: {e}")
-
-#df_mailing = df_mailing[df_mailing['attributes'].str.contains('Tirol|TIROL', case=False, na=False)]
-# Convert attributes to string first, then filter
-if 'attributes' in df_mailing.columns:
-    df_mailing['attributes_str'] = df_mailing['attributes'].astype(str)
-    df_mailing = df_mailing[df_mailing['attributes_str'].str.contains('Tirol|TIROL', case=False, na=False)]
-    df_mailing = df_mailing.drop('attributes_str', axis=1)  # Remove the temporary column if not needed
-    df_mailing_invited = df_mailing['numOfReceivers'].sum()
 
 dates = []
 started_participants = []
@@ -190,21 +146,33 @@ df = df.set_index('Date')
 visitors_total = df['Visitors'].sum()
 started_total = df['Started'].sum()
 finished_total = df['Finished'].sum()
-if 'df_mailing_invited' in locals():
-    col0, col1, col2, col3 = st.columns(4)
-    col0.metric("Total invited", df_mailing_invited)
-    col1.metric("Total Visitors", visitors_total, delta=str(round((visitors_total/df_mailing_invited)*100, 2))+"% of invited", delta_arrow="off")
-    col2.metric("Total Started", started_total, delta=str(round((started_total/visitors_total)*100, 2))+"% of visitors", delta_arrow="off")
-    col3.metric("Total Finished", finished_total, delta=str(round((finished_total/started_total)*100, 2))+"% of started", delta_arrow="off")
-else:
-    col0, col1, col2 = st.columns(3)
-    col0.metric("Total Visitors", visitors_total)
-    col1.metric("Total Started", started_total, delta=str(round((started_total/visitors_total)*100, 2))+"% of visitors", delta_arrow="off")
-    col2.metric("Total Finished", finished_total, delta=str(round((finished_total/started_total)*100, 2))+"% of started", delta_arrow="off")
+col0, col1, col2 = st.columns(3)
+col0.metric("Total Visitors", visitors_total)
+col1.metric("Total Started", started_total, delta=str(round((started_total/visitors_total)*100, 2))+"% of visitors", delta_arrow="off")
+col2.metric("Total Finished", finished_total, delta=str(round((finished_total/started_total)*100, 2))+"% of started", delta_arrow="off")
 
 #st.success("DataFrame created successfully with 'Date' as index.")
 #df.head()
-st.line_chart(df, color=['#7AAACE', '#355872', '#9CD5FF'])
+df_participants_melted = df.reset_index().melt('Date', var_name='Metric', value_name='Value')
+participants_chart = alt.Chart(df_participants_melted).mark_line().encode(
+    x='Date:T',
+    y='Value:Q',
+    color=alt.Color('Metric:N', scale=alt.Scale(domain=['Started', 'Finished', 'Visitors'], range=['#7AAACE', '#355872', '#9CD5FF']))
+)
+
+df_cumulative_finished = df.sort_index().reset_index()
+df_cumulative_finished['Cumulative Finished'] = df_cumulative_finished['Finished'].cumsum()
+cumulative_finished_chart = alt.Chart(df_cumulative_finished).mark_line().encode(
+    x='Date:T',
+    y='Cumulative Finished:Q',
+    color=alt.value('#355872')
+)
+
+tab_participants, tab_cumulative_finished = st.tabs(["Participants Over Time", "Cumulative Finished"])
+with tab_participants:
+    st.altair_chart(participants_chart, use_container_width=True)
+with tab_cumulative_finished:
+    st.altair_chart(cumulative_finished_chart, use_container_width=True)
 
 ## Devices data
 url = 'https://app.lamapoll.de/api/v2/polls/1965090/statistics'
