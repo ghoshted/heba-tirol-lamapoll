@@ -71,6 +71,50 @@ section[data-testid="stSidebar"] {
   border-right: var(--tp-border-strong-line);
 }
 
+/* ---------- sidebar page nav (custom st.page_link, in-flow between heading and description) ---------- */
+
+[data-testid="stPageLink"] {
+  margin: 0;
+}
+
+[data-testid="stPageLink-NavLink"] {
+  padding: var(--tp-space-3) var(--tp-space-4) !important;
+}
+
+[data-testid="stPageLink-NavLink"] p {
+  font-family: var(--tp-font-mono) !important;
+  font-size: var(--tp-size-mono-xs) !important;
+  font-weight: var(--tp-weight-mono) !important;
+  letter-spacing: var(--tp-track-label) !important;
+  text-transform: uppercase;
+  color: var(--tp-muted);
+  margin: 0;
+}
+
+[data-testid="stPageLink-NavLink"]:hover {
+  background: var(--tp-wash) !important;
+}
+
+[data-testid="stPageLink-NavLink"]:hover p {
+  color: var(--tp-ink);
+}
+
+/* An invisible marker rendered just before the active page's st.page_link lets us
+   style that link via the adjacent-sibling relationship, since st.page_link exposes
+   no active-state attribute of its own. */
+div[data-testid="stElementContainer"]:has(.tp-nav-active-marker) {
+  display: none;
+}
+
+div[data-testid="stElementContainer"]:has(.tp-nav-active-marker) + div[data-testid="stElementContainer"] [data-testid="stPageLink-NavLink"] {
+  background: var(--tp-accent-tint) !important;
+  box-shadow: var(--tp-active-marker) !important;
+}
+
+div[data-testid="stElementContainer"]:has(.tp-nav-active-marker) + div[data-testid="stElementContainer"] [data-testid="stPageLink-NavLink"] p {
+  color: var(--tp-ink);
+}
+
 section[data-testid="stSidebar"] [data-testid="stImage"] img {
   max-width: 128px !important;
   width: 128px !important;
