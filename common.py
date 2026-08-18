@@ -24,10 +24,10 @@ HAIR = "rgba(21, 20, 15, 0.14)"
 TICK = "rgba(21, 20, 15, 0.35)"
 MONO_FONT = "IBM Plex Mono"
 
-PAGES = [
-    st.Page("pages/tirol.py", title="Tirol", default=True),
-    st.Page("pages/luxembourg.py", title="Luxembourg"),
-]
+HOME_PAGE = st.Page("pages/home.py", title="Home", default=True)
+TIROL_PAGE = st.Page("pages/tirol.py", title="Tirol")
+LUXEMBOURG_PAGE = st.Page("pages/luxembourg.py", title="Luxembourg")
+PAGES = [HOME_PAGE, TIROL_PAGE, LUXEMBOURG_PAGE]
 
 
 def inject_css():

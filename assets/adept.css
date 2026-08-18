@@ -73,15 +73,15 @@ section[data-testid="stSidebar"] {
 
 /* ---------- sidebar page nav (custom st.page_link, in-flow between heading and description) ---------- */
 
-[data-testid="stPageLink"] {
+section[data-testid="stSidebar"] [data-testid="stPageLink"] {
   margin: 0;
 }
 
-[data-testid="stPageLink-NavLink"] {
+section[data-testid="stSidebar"] [data-testid="stPageLink-NavLink"] {
   padding: var(--tp-space-3) var(--tp-space-4) !important;
 }
 
-[data-testid="stPageLink-NavLink"] p {
+section[data-testid="stSidebar"] [data-testid="stPageLink-NavLink"] p {
   font-family: var(--tp-font-mono) !important;
   font-size: var(--tp-size-mono-xs) !important;
   font-weight: var(--tp-weight-mono) !important;
@@ -91,28 +91,53 @@ section[data-testid="stSidebar"] {
   margin: 0;
 }
 
-[data-testid="stPageLink-NavLink"]:hover {
+section[data-testid="stSidebar"] [data-testid="stPageLink-NavLink"]:hover {
   background: var(--tp-wash) !important;
 }
 
-[data-testid="stPageLink-NavLink"]:hover p {
+section[data-testid="stSidebar"] [data-testid="stPageLink-NavLink"]:hover p {
   color: var(--tp-ink);
 }
 
 /* An invisible marker rendered just before the active page's st.page_link lets us
    style that link via the adjacent-sibling relationship, since st.page_link exposes
    no active-state attribute of its own. */
-div[data-testid="stElementContainer"]:has(.tp-nav-active-marker) {
+section[data-testid="stSidebar"] div[data-testid="stElementContainer"]:has(.tp-nav-active-marker) {
   display: none;
 }
 
-div[data-testid="stElementContainer"]:has(.tp-nav-active-marker) + div[data-testid="stElementContainer"] [data-testid="stPageLink-NavLink"] {
+section[data-testid="stSidebar"] div[data-testid="stElementContainer"]:has(.tp-nav-active-marker) + div[data-testid="stElementContainer"] [data-testid="stPageLink-NavLink"] {
   background: var(--tp-accent-tint) !important;
   box-shadow: var(--tp-active-marker) !important;
 }
 
-div[data-testid="stElementContainer"]:has(.tp-nav-active-marker) + div[data-testid="stElementContainer"] [data-testid="stPageLink-NavLink"] p {
+section[data-testid="stSidebar"] div[data-testid="stElementContainer"]:has(.tp-nav-active-marker) + div[data-testid="stElementContainer"] [data-testid="stPageLink-NavLink"] p {
   color: var(--tp-ink);
+}
+
+/* ---------- home page site index (same st.page_link component, styled as DataRows) ---------- */
+
+[data-testid="stMain"] [data-testid="stPageLink"] {
+  margin: 0;
+}
+
+[data-testid="stMain"] [data-testid="stPageLink-NavLink"] {
+  display: block;
+  width: 100%;
+  padding: var(--tp-row-pad) 0 !important;
+  border-bottom: var(--tp-border-row);
+}
+
+[data-testid="stMain"] [data-testid="stPageLink-NavLink"] p {
+  font-family: var(--tp-font-sans) !important;
+  font-size: var(--tp-size-row-title) !important;
+  font-weight: var(--tp-weight-text) !important;
+  color: var(--tp-ink);
+  margin: 0;
+}
+
+[data-testid="stMain"] [data-testid="stPageLink-NavLink"]:hover {
+  background: var(--tp-wash) !important;
 }
 
 section[data-testid="stSidebar"] [data-testid="stImage"] img {
